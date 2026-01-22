@@ -8,6 +8,7 @@ const route = useRoute();
 const isLoggedIn = ref(false);
 const userInfo = ref(null);
 
+// Hàm kiểm tra đăng nhập
 const checkLoginStatus = () => {
   const userStr = localStorage.getItem('user');
   if (userStr) {
@@ -23,19 +24,22 @@ onMounted(() => {
   checkLoginStatus();
 });
 
+// Theo dõi sự thay đổi URL để cập nhật lại trạng thái Header
 watch(route, () => {
   checkLoginStatus();
 });
 
 const handleLogout = () => {
   localStorage.removeItem('user');
-  checkLoginStatus(); 
+  isLoggedIn.value = false;
+  userInfo.value = null;
   alert('Đã đăng xuất thành công!');
   router.push('/login');
 };
 </script>
 
 <template>
+  <!-- Thêm class fixed-top để menu luôn dính trên cùng -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
     <div class="container">
       <router-link class="navbar-brand fw-bold" to="/">
@@ -60,14 +64,15 @@ const handleLogout = () => {
         <ul class="navbar-nav ms-auto">
           <li class="nav-item dropdown">
             <a 
-              class="nav-link dropdown-toggle active d-flex align-items-center" 
+              class="nav-link dropdown-toggle d-flex align-items-center" 
               href="#" 
               role="button" 
               data-bs-toggle="dropdown" 
               aria-expanded="false"
             >
-              <span class="me-2">
-                {{ isLoggedIn ? `Chào, ${userInfo.email.split('@')[0]}` : 'Tài khoản' }}
+              <i class="bi bi-person-circle me-1"></i>
+              <span>
+                {{ isLoggedIn && userInfo ? userInfo.name || userInfo.email : 'Tài khoản' }}
               </span>
             </a>
             
@@ -92,6 +97,7 @@ const handleLogout = () => {
                   </router-link>
                 </li>
                 <li>
+                  <!-- Link tạo bài viết trong dropdown -->
                   <router-link class="dropdown-item" to="/create-post">
                     <i class="bi bi-pencil-square me-2"></i>Viết bài mới
                   </router-link>
@@ -117,7 +123,6 @@ const handleLogout = () => {
   color: #fff !important;
   font-weight: bold;
 }
-
 .nav-link {
   cursor: pointer;
 }

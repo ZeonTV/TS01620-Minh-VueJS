@@ -2,10 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import HomeView from '../views/HomeView.vue'
 import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'      // Trang Đăng ký
-import CreatePost from '../views/CreatePost.vue'  // Trang Đăng bài
-import Profile from '../views/Profile.vue'        // Trang Cá nhân
-import PostDetail from '../views/PostDetail.vue'  // Trang Chi tiết bài viết
+import Register from '../views/Register.vue'
+import CreatePost from '../views/CreatePost.vue'
+import Profile from '../views/Profile.vue'
+import PostDetail from '../views/PostDetail.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,19 +29,39 @@ const router = createRouter({
     {
       path: '/create-post',
       name: 'create-post',
-      component: CreatePost
+      component: CreatePost,
+      meta: { requiresAuth: true } 
     },
     {
-      path: '/profile',
-      name: 'profile',
-      component: Profile
+      path: '/edit-post/:id',
+      name: 'edit-post',
+      component: CreatePost,
+      props: true, 
+      meta: { requiresAuth: true }
     },
     {
       path: '/post/:id', 
       name: 'post-detail',
-      component: PostDetail
+      component: PostDetail,
+      props: true 
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/:pathMatch(.*)*',redirect: '/'
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  }
 })
 
 export default router
